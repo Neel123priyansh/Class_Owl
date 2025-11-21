@@ -184,18 +184,6 @@ This makes the device more engaging, friendly for kids, and clearly indicates sy
 ![alt text](https://github.com/Neel123priyansh/Class_Owl/blob/main/img/IMG-20250405-WA0015.jpg/?raw=true)
 ---
 
-## 🤝 Contribution
-
-Pull requests are welcome. For major changes, please open an issue first.
-
----
-
-## 📄 License
-
-MIT License.
-
----
-
 ### ✨ Made for classrooms, students & equitable education.
 
 🦉 *Learn. Understand. Remember.*
