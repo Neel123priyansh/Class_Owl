@@ -1,0 +1,100 @@
+  <!DOCTYPE html>
+  <html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot Interface</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      async function sendMessage() {
+        const query = document.getElementById("userInput").value.trim();
+        const chatBox = document.getElementById("chatBox");
+
+        if (!query) {
+          alert("Please type a message!");
+          return;
+        }
+
+        // Append the user's query to the chatbox
+        appendMessage("user", query);
+
+        // Clear input field
+        document.getElementById("userInput").value = "";
+
+        // Show loading indicator
+        appendMessage("bot", "Typing...");
+
+        try {
+          const response = await fetch('/query', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ query })
+          });
+
+          const result = await response.json();
+
+          // Remove "Typing..." and show bot response
+          removeLastMessage();
+          appendMessage("bot", result.answer || "I'm sorry, I couldn't process your query.");
+        } catch (error) {
+          removeLastMessage();
+          appendMessage("bot", "Error: Unable to connect to the server.");
+        }
+      }
+
+      function appendMessage(sender, text) {
+        const chatBox = document.getElementById("chatBox");
+        const messageDiv = document.createElement("div");
+        messageDiv.className = `p-3 rounded-lg mb-2 max-w-xl ${
+          sender === "user" ? "bg-blue-500 text-white self-end" : "bg-gray-200 text-gray-800 self-start"
+        }`;
+        messageDiv.innerText = text;
+        chatBox.appendChild(messageDiv);
+
+        // Scroll to the bottom
+        chatBox.scrollTop = chatBox.scrollHeight;
+      }
+
+      function removeLastMessage() {
+        const chatBox = document.getElementById("chatBox");
+        chatBox.removeChild(chatBox.lastChild);
+      }
+    </script>
+  </head>
+  <body class="bg-gray-100 h-screen flex items-center justify-center">
+
+    <div class="bg-white shadow-lg rounded-lg w-full max-w-3xl flex flex-col h-[90vh]">
+
+      <!-- Header -->
+      <div class="bg-gradient-to-r from-purple-500 to-pink-500 text-white text-center py-4 rounded-t-lg">
+        <h1 class="text-2xl font-semibold">Medical Chatbot</h1>
+        <p class="text-sm">Ask me anything!</p>
+      </div>
+
+      <!-- Chatbox -->
+      <div id="chatBox" class="flex-1 p-4 overflow-y-auto flex flex-col space-y-2">
+        <!-- Chat messages will dynamically appear here -->
+      </div>
+
+      <!-- Input -->
+      <div class="flex items-center p-4 border-t bg-gray-50">
+        <input
+          id="userInput"
+          type="text"
+          placeholder="Type your message here..."
+          class="flex-1 border rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-purple-500"
+        />
+        <button
+          onclick="sendMessage()"
+          class="ml-3 bg-purple-500 text-white px-4 py-2 rounded-lg hover:bg-purple-600 transition-all"
+        >
+          Send
+        </button>
+      </div>
+
+    </div>
+
+  </body>
+  </html>
